@@ -12,7 +12,7 @@ import { getUser } from "./redux/api/userApi";
 import { userExists, userNotExists } from "./redux/reducer/userReducer";
 import { UserReducerInitialState } from "./types/reducer-types";   
 import Footer from "./components/Footer"; 
-const Checkout = lazy(() => import("./pages/Checkout")); 
+// const Checkout = lazy(() => import("./pages/Checkout")); 
 
 const Order = lazy(() => import("./pages/Order"));
 const Login = lazy(() => import("./pages/Login")); 
@@ -90,7 +90,7 @@ const App = () => {
           >
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/orders" element={<Order />} />
-            <Route path="/pay" element={<Checkout />} />
+            {/* <Route path="/pay" element={<Checkout />} /> */}
           </Route>
 
     
