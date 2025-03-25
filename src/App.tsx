@@ -8,14 +8,14 @@ import Loader from "./components/Loader";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { auth } from "./firebase";
 import NotFound from "./pages/NotFound";
-import { getUser } from "./redux/api/userApi";
+import { getUser } from "./redux/api/userApi"; 
 import { userExists, userNotExists } from "./redux/reducer/userReducer";
-import { UserReducerInitialState } from "./types/reducer-types";
-import Footer from "./components/Footer";
-const Checkout = lazy(() => import("./pages/Checkout"));
+import { UserReducerInitialState } from "./types/reducer-types";   
+import Footer from "./components/Footer"; 
+const Checkout = lazy(() => import("./pages/Checkout")); 
 
 const Order = lazy(() => import("./pages/Order"));
-const Login = lazy(() => import("./pages/Login"));
+const Login = lazy(() => import("./pages/Login")); 
 const Shipping = lazy(() => import("./pages/Shipping"));
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -42,7 +42,7 @@ const ProductManagement = lazy(
   () => import("./pages/admin/management/productmanagement")
 );
 const TransactionManagement = lazy(
-  () => import("./pages/admin/management/transactionmanagement")
+  () => import("./pages/admin/management/transactionmanagement") 
 );
 
 const App = () => {
@@ -52,7 +52,7 @@ const App = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, async (user) => { 
       if (user) {
         const data = await getUser(user.uid);
         dispatch(userExists(data.user));

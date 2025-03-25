@@ -1,3 +1,12 @@
+@use "admin-styles/mixin" as *;
+@use "./admin-styles/dashboard";
+@use "./admin-styles/products";
+@use "./admin-styles/chart";
+@use "./admin-styles/dashboardapp";
+@use "./admin-styles/mediaquery";
+
+
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -34,14 +43,6 @@ $color3: rgba(0, 90, 200, 0.725);
 .green {
   color: rgb(0, 195, 0);
 }
-
-@import "admin-styles/mixin";
-
-@import "admin-styles/dashboard";
-@import "admin-styles/products";
-@import "admin-styles/chart";
-@import "admin-styles/dashboardapp";
-@import "admin-styles/mediaquery";
 
 
 
