@@ -50,47 +50,62 @@ const Login = () => {
   };
   
   return (
-    <div className="flex items-center justify-center min-h-screen ">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-800">Welcome Back</h2>
-      <form>
-        <div className="mb-6">
-        <label className="block text-gray-700 font-medium">
-          Gender:
-          <select
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-          className="mt-2 p-3 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          >
-          <option value="">Select Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-          </select>
-        </label>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+          <p className="text-gray-500">Please enter your details to sign in</p>
         </div>
-        <div className="mb-6">
-        <label className="block text-gray-700 font-medium">
-          Date of Birth:
-          <input
-          type="date"
-          value={dob}
-          onChange={(e) => setDob(e.target.value)}
-          className="mt-2 p-3 block w-full bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </label>
-        </div>
-        <p className="text-lg text-gray-600 mb-6 text-center">
-        Already have an account? Login below
+        
+        <form className="space-y-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Gender
+            </label>
+            <div className="relative">
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all appearance-none"
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+            />
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="button"
+              onClick={() => handleGoogleLogin()}
+              className="w-full bg-white text-gray-700 border border-gray-300 py-4 px-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-all duration-300 font-bold shadow-sm hover:shadow-md"
+            >
+              <BsGoogle className="text-xl text-red-500" /> 
+              <span>Sign in with Google</span>
+            </button>
+          </div>
+        </form>
+        
+        <p className="mt-8 text-center text-sm text-gray-400">
+          By continuing, you agree to our Terms of Service and Privacy Policy.
         </p>
-        <button
-        type="button"
-        onClick={() => handleGoogleLogin()}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-lg flex items-center justify-center hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
-        >
-        <BsGoogle className="mr-2 text-xl" /> Login with Google
-        </button>
-      </form>
       </div>
     </div>
   );

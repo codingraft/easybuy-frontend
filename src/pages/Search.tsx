@@ -52,26 +52,26 @@ const Search = ({ user }: { user: User | null }) => {
   if (isError) toast.error((error as CustomError).data.message);
 
   return (
-    <div className="container flex items-start justify-between mx-auto gap-10 py-10 relative my-24 flex-wrap">
-      <aside className="search-sidebar border border-slate-200 lg:flex-1 flex-auto p-8 rounded-lg bg-white shadow-md">
-        <h1 className="text-2xl font-semibold mb-6 text-gray-800">Filters</h1>
-        <div className="filter mb-6">
-          <h2 className="text-lg font-medium text-gray-700 mb-2">Sort</h2>
+    <div className="container flex items-start justify-between mx-auto gap-10 py-10 relative my-24 flex-wrap px-4">
+      <aside className="search-sidebar border border-gray-100 lg:flex-1 flex-auto p-6 rounded-xl bg-white shadow-lg sticky top-24">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">Filters</h1>
+        <div className="filter mb-8">
+          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">Sort By</h2>
           <select
             value={sort}
             name="sort"
-            className="p-3 border border-gray-300 rounded-md w-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="p-3 border border-gray-200 rounded-lg w-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
             onChange={(e) => setSort(e.target.value)}
           >
-            <option value="price">Sort by</option>
+            <option value="price">None</option>
             <option value="dsc">Price (High to Low)</option>
             <option value="asc">Price (Low to High)</option>
           </select>
         </div>
-        <div className="filter mb-6">
-          <h2 className="text-lg font-medium text-gray-700 mb-2">
+        <div className="filter mb-8">
+          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">
             Max Price:{" "}
-            <span className="font-semibold text-blue-600">{range || ""}</span>
+            <span className="font-semibold text-blue-600">₹{range || ""}</span>
           </h2>
           <input
             type="range"
@@ -79,18 +79,18 @@ const Search = ({ user }: { user: User | null }) => {
             max={1000000}
             value={range}
             onChange={(e) => setRange(Number(e.target.value))}
-            className="w-full accent-blue-500"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
           />
         </div>
         <div className="filter">
-          <h2 className="text-lg font-medium text-gray-700 mb-2">Category</h2>
+          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">Category</h2>
           <select
             name="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-3 border border-gray-300 rounded-md w-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            className="p-3 border border-gray-200 rounded-lg w-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
           >
-            <option value="">All</option>
+            <option value="">All Categories</option>
             {!loadingCategiories &&
               categoriesResponse?.categories.map((category) => (
                 <option key={category} value={category}>
@@ -100,16 +100,16 @@ const Search = ({ user }: { user: User | null }) => {
           </select>
         </div>
       </aside>
-      <main className="search-main lg:w-3/4 w-full p-5">
-        <h1 className="text-2xl ">Products</h1>
-        <div className="search mb-5">
+      <main className="search-main lg:w-3/4 w-full">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Products</h1>
+        <div className="search mb-8">
           <div className="relative">
             <input
               type="text"
-              placeholder="🔍 Search by name..."
+              placeholder="Search by name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="mt-1 p-3 block w-full bg-gray-50 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all duration-300 ease-in-out"
+              className="w-full p-4 pl-6 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-lg"
             />
           </div>
           {productLoading ? (
