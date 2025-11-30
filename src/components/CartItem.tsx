@@ -18,42 +18,41 @@ const CartItem = ({
 }: CartItemProps) => {
   const { productId, name, photo, price, quantity } = cartItem;
   return (
-    <div className="cart-item flex items-center justify-between border border-slate-200 p-5 mb-1 rounded bg-white">
-      <div className="flex w-full gap-10">
-        <img
-          src={`${server}/${photo}`}
-          alt={name}
-          className="w-40 h-20 object-cover"
-        />
-        <div className="flex flex-col justify-between w-full">
-          <div className="flex justify-between w-full">
-            <Link to={`/product/${productId}`}>
-              <span className="font-bold">{name}</span>
+    <div className="cart-item flex items-center justify-between border border-gray-100 p-6 mb-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex w-full gap-6 items-center">
+        <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
+          <img
+            src={`${server}/${photo}`}
+            alt={name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="flex flex-col justify-between w-full gap-2">
+          <div className="flex justify-between items-start w-full">
+            <Link to={`/product/${productId}`} className="hover:text-blue-600 transition-colors">
+              <span className="font-bold text-lg text-gray-800">{name}</span>
             </Link>
-            <span>
-              {" "}
-              <b>₹{price}</b>{" "}
-            </span>
+            <span className="font-bold text-lg text-gray-900">₹{price}</span>
           </div>
-          <div className="flex justify-between">
-            <div className="flex">
+          <div className="flex justify-between items-center mt-2">
+            <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => decreamentHandler(cartItem)}
-                className="border border-gray-400 rounded px-2 hover:bg-black hover:text-white text-[10px]"
+                className="w-8 h-8 flex items-center justify-center rounded-md bg-white text-gray-600 hover:bg-black hover:text-white transition-colors shadow-sm"
               >
-                <FaMinus />
+                <FaMinus size={10} />
               </button>
-              <span className="mx-2">{quantity}</span>
+              <span className="mx-4 font-medium w-4 text-center">{quantity}</span>
               <button
                 onClick={() => increamentHandler(cartItem)}
-                className="border border-gray-400 px-2 rounded hover:bg-black hover:text-white text-[12px]"
+                className="w-8 h-8 flex items-center justify-center rounded-md bg-white text-gray-600 hover:bg-black hover:text-white transition-colors shadow-sm"
               >
-                <FaPlus />
+                <FaPlus size={10} />
               </button>
             </div>
             <button
               onClick={() => removeHandler(productId)}
-              className="text-red-600"
+              className="text-red-500 hover:text-red-700 font-medium text-sm transition-colors"
             >
               Remove
             </button>
