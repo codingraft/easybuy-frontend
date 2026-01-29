@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   server: {
-    // Ensuring Vite serves `index.html` for all routes
-    middlewareMode: true,
+    port: 5173,
+    host: true,
   },
 });

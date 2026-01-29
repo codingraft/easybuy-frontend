@@ -9,13 +9,11 @@ import {
 } from "react-icons/ci";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-// import logo from "../assets/images/logo.png";
+import { Link, useLocation } from "react-router-dom";
 import { auth } from "../firebase";
 import { CartReducerInitialState } from "../types/reducer-types";
 import { User } from "../types/types";
-
-
+import { Button } from "./ui/Button";
 
 interface PropsType {
   user: User | null;
@@ -27,141 +25,160 @@ const Header = ({ user }: PropsType) => {
   );
   const [open, setOpen] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const location = useLocation();
 
   const logout = async () => {
     try {
       await signOut(auth);
       toast.success("Logged out successfully");
+      setOpen(false);
     } catch (error) {
       toast.error("Error logging out");
       console.log(error);
     }
   };
 
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Shop", path: "/search" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
+  ];
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-      <div className="container mx-auto flex items-center justify-between px-6 py-4">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
+      <div className="container mx-auto flex items-center justify-between px-6 h-20">
+        {/* Logo */}
         <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-black text-white flex items-center justify-center rounded-xl font-bold text-xl group-hover:rotate-12 transition-transform duration-300">E</div>
-          <span className="font-bold text-xl tracking-tight text-gray-900">EasyBuy</span>
+          <div className="w-10 h-10 bg-primary text-primary-foreground flex items-center justify-center rounded-xl font-heading font-bold text-xl group-hover:rotate-12 transition-transform duration-300 shadow-md">E</div>
+          <span className="font-heading font-bold text-2xl tracking-tight text-foreground">EasyBuy</span>
         </Link>
 
-        <div
-          className={`absolute top-full left-0 w-full bg-white md:bg-transparent border-b md:border-none border-gray-100 flex flex-col items-center md:static md:flex md:flex-row md:items-center md:w-auto md:space-x-8 transition-all duration-300 ${
-            menuOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-4 md:opacity-100 md:visible md:translate-y-0"
-          }`}
-        >
-          <Link
-            to="/"
-            onClick={() => setMenuOpen(false)}
-            className="py-4 md:py-0 text-gray-600 hover:text-black font-medium transition-colors relative group"
-          >
-            Home
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
-            to="/search"
-            onClick={() => setMenuOpen(false)}
-            className="py-4 md:py-0 text-gray-600 hover:text-black font-medium transition-colors relative group"
-          >
-            Shop
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
-            to="/about"
-            onClick={() => setMenuOpen(false)}
-            className="py-4 md:py-0 text-gray-600 hover:text-black font-medium transition-colors relative group"
-          >
-            About
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-          <Link
-            to="/contact"
-            onClick={() => setMenuOpen(false)}
-            className="py-4 md:py-0 text-gray-600 hover:text-black font-medium transition-colors relative group"
-          >
-            Contact
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
-          </Link>
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center space-x-8">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`text-sm font-medium transition-colors hover:text-primary relative group ${location.pathname === link.path ? "text-primary" : "text-muted-foreground"
+                }`}
+            >
+              {link.name}
+              <span className={`absolute -bottom-1 left-0 w-full h-0.5 bg-primary transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100 ${location.pathname === link.path ? "scale-x-100" : ""}`}></span>
+            </Link>
+          ))}
         </div>
 
-        <div className="flex items-center gap-6">
-          <Link
-            to="/search"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-600 hover:text-black transition-colors"
-          >
+        {/* Icons & Actions */}
+        <div className="flex items-center gap-4">
+          <Link to="/search" className="p-2 text-muted-foreground hover:text-primary transition-colors">
             <CiSearch className="text-2xl" />
           </Link>
-          <Link
-            to="/cart"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-600 hover:text-black transition-colors relative"
-          >
+
+          <Link to="/cart" className="p-2 text-muted-foreground hover:text-primary transition-colors relative">
             <CiShoppingCart className="text-2xl" />
             {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+              <span className="absolute top-0 right-0 bg-primary text-primary-foreground text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-background">
                 {cartItems.length}
               </span>
             )}
           </Link>
+
           {user?._id ? (
             <div className="relative">
               <button
                 onClick={() => setOpen((prev) => !prev)}
-                className="flex items-center gap-2 text-gray-600 hover:text-black transition-colors"
+                className="p-2 text-muted-foreground hover:text-primary transition-colors focus:outline-none"
               >
                 <CiUser className="text-2xl" />
               </button>
+
+              {/* Dropdown */}
               {open && (
-                <div className="absolute right-0 mt-4 w-48 bg-white shadow-xl rounded-xl border border-gray-100 py-2 animate-fade-in-down">
-                  {user.role === "admin" && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 mt-2 w-56 bg-card text-card-foreground shadow-xl rounded-xl border border-border py-2 z-20 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="px-4 py-2 border-b border-border mb-2">
+                      <p className="font-medium text-sm truncate">{user.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                    </div>
+
+                    {user.role === "admin" && (
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setOpen(false)}
+                        className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <Link
-                      to="/admin/dashboard"
-                      onClick={() => {
-                        setOpen(false);
-                        setMenuOpen(false);
-                      }}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black"
+                      to="/orders"
+                      onClick={() => setOpen(false)}
+                      className="block px-4 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
                     >
-                      Admin Dashboard
+                      My Orders
                     </Link>
-                  )}
-                  <Link
-                    to="/orders"
-                    onClick={() => {
-                      setOpen(false);
-                      setMenuOpen(false);
-                    }}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black"
-                  >
-                    My Orders
-                  </Link>
-                  <button
-                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                    onClick={logout}
-                  >
-                    <CiLogout className="mr-2" />
-                    Logout
-                  </button>
-                </div>
+                    <div className="border-t border-border mt-2 pt-2 px-4 pb-1">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="w-full justify-start pl-2"
+                        onClick={logout}
+                      >
+                        <CiLogout className="mr-2 h-4 w-4" />
+                        Logout
+                      </Button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           ) : (
-            <Link
-              to="/login"
-              onClick={() => setMenuOpen(false)}
-              className="hidden md:flex items-center px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-all duration-300 text-sm font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
-              Login
-            </Link>
+            <div className="hidden md:block">
+              <Link to="/login">
+                <Button className="rounded-full px-6 font-semibold shadow-lg hover:shadow-primary/25">
+                  Login
+                </Button>
+              </Link>
+            </div>
           )}
+
+          {/* Mobile Menu Button */}
           <button
-            className="text-2xl md:hidden text-gray-600"
+            className="md:hidden p-2 text-foreground"
             onClick={() => setMenuOpen((prev) => !prev)}
           >
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
+        </div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`fixed inset-x-0 top-20 bg-background/95 backdrop-blur-lg border-b border-border p-6 md:hidden transition-all duration-300 ease-in-out ${menuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible"
+            }`}
+        >
+          <div className="flex flex-col space-y-4">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setMenuOpen(false)}
+                className={`text-lg font-medium py-2 border-b border-border/50 ${location.pathname === link.path ? "text-primary" : "text-muted-foreground"
+                  }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            {!user && (
+              <Link to="/login" onClick={() => setMenuOpen(false)} className="pt-4">
+                <Button className="w-full rounded-full">Login</Button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </nav>
