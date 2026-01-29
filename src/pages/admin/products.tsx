@@ -5,7 +5,7 @@ import { Column } from "react-table";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import TableHOC from "../../components/admin/TableHOC";
 import { useAllProductsQuery } from "../../redux/api/productApi";
-import { server } from "../../redux/store";
+import { getImageUrl } from "../../utils/features";
 import toast from "react-hot-toast";
 import { CustomError } from "../../types/api-types";
 import { useSelector } from "react-redux";
@@ -62,7 +62,7 @@ const Products = () => {
     if (data) {
       setRows(
         data.products.map((product) => ({
-          photo: <img src={`${server}/${product.image}`} alt="product" />,
+          photo: <img src={getImageUrl(product.image)} alt="product" className="w-12 h-12 rounded-lg object-cover" />,
           name: product.name,
           price: product.price,
           stock: product.stock,
@@ -75,18 +75,31 @@ const Products = () => {
   const Table = TableHOC<DataType>(
     columns,
     rows,
-    "dashboard-product-box",
+    "w-full overflow-hidden",
     "Products",
     rows.length > 6
   )();
 
   return (
-    <div className="admin-container">
-      <AdminSidebar />
-      <main>{isLoading ? <Skeleton count={20} /> : Table}</main>
-      <Link to="/admin/product/new" className="create-product-btn">
-        <FaPlus />
-      </Link>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="admin-container">
+        <AdminSidebar />
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+          {isLoading ? (
+            <Skeleton count={20} />
+          ) : (
+            <div className="relative">
+              {Table}
+              <Link
+                to="/admin/product/new"
+                className="fixed bottom-8 right-8 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 z-50 text-2xl"
+              >
+                <FaPlus />
+              </Link>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };

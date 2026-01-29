@@ -1,8 +1,11 @@
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+
+  if (location.pathname.startsWith("/admin")) return null;
 
   return (
     <footer className="bg-card text-card-foreground pt-20 pb-10 border-t border-border">

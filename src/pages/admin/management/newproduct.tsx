@@ -57,64 +57,87 @@ const NewProduct = () => {
   };
 
   return (
-    <div className="admin-container">
-      <AdminSidebar />
-      <main className="product-management">
-        <article>
-          <form onSubmit={submitHandler}>
-            <h2>New Product</h2>
-            <div>
-              <label>Name</label>
-              <input
-                required
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <label>Price</label>
-              <input
-                required
-                type="number"
-                placeholder="Price"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <label>Stock</label>
-              <input
-                required
-                type="number"
-                placeholder="Stock"
-                value={stock}
-                onChange={(e) => setStock(Number(e.target.value))}
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="admin-container">
+        <AdminSidebar />
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+          <article className="max-w-4xl mx-auto bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg border border-white/20">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-8 uppercase tracking-wide text-center">
+              New Product
+            </h2>
+            <form onSubmit={submitHandler} className="max-w-lg mx-auto space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+                <input
+                  required
+                  type="text"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Price</label>
+                <input
+                  required
+                  type="number"
+                  placeholder="Price"
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Stock</label>
+                <input
+                  required
+                  type="number"
+                  placeholder="Stock"
+                  value={stock}
+                  onChange={(e) => setStock(Number(e.target.value))}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
 
-            <div>
-              <label>Category</label>
-              <input
-                required
-                type="text"
-                placeholder="eg. laptop, camera etc"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
-            </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Category</label>
+                <input
+                  required
+                  type="text"
+                  placeholder="eg. laptop, camera etc"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                />
+              </div>
 
-            <div>
-              <label>Photo</label>
-              <input type="file" required onChange={changeImageHandler} />
-            </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Photo</label>
+                <input
+                  type="file"
+                  required
+                  onChange={changeImageHandler}
+                  className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-200 transition-all"
+                />
+              </div>
 
-            {photoPrev && <img src={photoPrev} alt="New Image" />}
-            <button type="submit">Create</button>
-          </form>
-        </article>
-      </main>
+              {photoPrev && (
+                <div className="flex justify-center mt-4">
+                  <img src={photoPrev} alt="New Image" className="w-32 h-32 object-cover rounded-xl shadow-md border border-slate-200 dark:border-slate-600" />
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold uppercase tracking-wider shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1"
+              >
+                Create
+              </button>
+            </form>
+          </article>
+        </main>
+      </div>
     </div>
   );
 };

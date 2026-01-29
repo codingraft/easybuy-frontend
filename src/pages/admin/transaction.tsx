@@ -68,7 +68,7 @@ const Transaction = () => {
   useEffect(() => {
     if (data) {
       setRows(
-        data.orders.map((order,index) => ({
+        data.orders.map((order, index) => ({
           user: order.user?.name,
           amount: order.total,
           discount: order.discount,
@@ -76,18 +76,17 @@ const Transaction = () => {
           status: (
             <span
               key={index}
-              className={
-                order.status === "Shipped"
-                  ? "green"
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${order.status === "Shipped"
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                   : order.status === "Delivered"
-                  ? "purple"
-                  : "red"
-              }
+                    ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                    : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                }`}
             >
               {order.status}
             </span>
           ),
-          action: <Link key={index} to={`/admin/transaction/${order._id}`}>Manage</Link>,
+          action: <Link key={index} to={`/admin/transaction/${order._id}`} className="text-blue-500 hover:underline">Manage</Link>,
         }))
       );
     }
@@ -96,14 +95,19 @@ const Transaction = () => {
   const Table = TableHOC<DataType>(
     columns,
     rows,
-    "dashboard-product-box",
+    "w-full overflow-hidden",
     "Transactions",
     rows.length > 6
   )();
+
   return (
-    <div className="admin-container">
-      <AdminSidebar />
-      <main>{isLoading ? <Skeleton /> : Table}</main>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="admin-container">
+        <AdminSidebar />
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+          {isLoading ? <Skeleton count={20} /> : Table}
+        </main>
+      </div>
     </div>
   );
 };

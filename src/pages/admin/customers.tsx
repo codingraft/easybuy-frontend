@@ -59,7 +59,7 @@ const Customers = () => {
   const Table = TableHOC<DataType>(
     columns,
     rows,
-    "dashboard-product-box",
+    "w-full overflow-hidden",
     "Customers",
     rows.length > 6
   )();
@@ -84,13 +84,13 @@ const Customers = () => {
       console.log("data", data);
       setRows(
         data.users.map((user, index) => ({
-          avatar: <img src={user.image} alt={user.name} key={index}/>,
+          avatar: <img src={user.image} alt={user.name} key={index} className="w-10 h-10 rounded-full object-cover" />,
           name: user.name,
           email: user.email,
           gender: user.gender,
           role: user.role,
           action: (
-            <button onClick={() => deleteHandler(user._id)}>
+            <button onClick={() => deleteHandler(user._id)} className="text-red-500 hover:text-red-700 transition-colors">
               <FaTrash />
             </button>
           ),
@@ -98,10 +98,15 @@ const Customers = () => {
       );
     }
   }, [data, deleteHandler]);
+
   return (
-    <div className="admin-container">
-      <AdminSidebar />
-      <main>{isLoading ? <Skeleton /> : Table}</main>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="admin-container">
+        <AdminSidebar />
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+          {isLoading ? <Skeleton count={20} /> : Table}
+        </main>
+      </div>
     </div>
   );
 };

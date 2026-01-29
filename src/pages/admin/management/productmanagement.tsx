@@ -9,9 +9,8 @@ import {
   useUpdateProductMutation,
 } from "../../../redux/api/productApi";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { server } from "../../../redux/store";
+import { getImageUrl, responseToast } from "../../../utils/features";
 import { Skeleton } from "../../../components/Loader";
-import { responseToast } from "../../../utils/features";
 
 const Productmanagement = () => {
   const { user } = useSelector(
@@ -73,17 +72,17 @@ const Productmanagement = () => {
       productId: data?.product._id as string,
     });
 
-    responseToast(res,navigate, "/admin/product");
+    responseToast(res, navigate, "/admin/product");
   };
 
   const deleteHandler = async () => {
-  
+
     const res = await deleteProduct({
       userId: user?._id as string,
       productId: data?.product._id as string,
     });
 
-    responseToast(res,navigate, "/admin/product");
+    responseToast(res, navigate, "/admin/product");
   };
 
   useEffect(() => {
@@ -95,83 +94,130 @@ const Productmanagement = () => {
     }
   }, [data]);
 
-  if(isError) return <Navigate to="/404" />
+  if (isError) return <Navigate to="/404" />
 
   return (
-    <div className="admin-container">
-      <AdminSidebar />
-      <main className="product-management">
-        {isLoading ? (
-          <Skeleton count={10} />
-        ) : (
-          <>
-            <section>
-              <strong>ID - {data?.product._id}</strong>
-              <img src={`${server}/${image}`} alt="Product" />
-              <p>{name}</p>
-              {stock > 0 ? (
-                <span className="green">{stock} Available</span>
-              ) : (
-                <span className="red"> Not Available</span>
-              )}
-              <h3>₹{price}</h3>
-            </section>
-            <article>
-              <button className="product-delete-btn" onClick={deleteHandler}>
-                <FaTrash />
-              </button>
-              <form onSubmit={submitHandler}>
-                <h2>Manage</h2>
-                <div>
-                  <label>Name</label>
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={nameUpdate}
-                    onChange={(e) => setNameUpdate(e.target.value)}
-                  />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="admin-container">
+        <AdminSidebar />
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+          {isLoading ? (
+            <Skeleton count={20} />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              {/* Product Preview Card */}
+              <section className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg border border-white/20 h-fit sticky top-8 space-y-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div className={`px-4 py-1.5 rounded-full text-sm font-semibold ${stock > 0
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    }`}>
+                    {stock > 0 ? `${stock} Available` : "Out of Stock"}
+                  </div>
+                  <strong className="text-slate-500 dark:text-slate-400 text-sm">ID: {data?.product._id}</strong>
                 </div>
-                <div>
-                  <label>Price</label>
-                  <input
-                    type="number"
-                    placeholder="Price"
-                    value={priceUpdate}
-                    onChange={(e) => setPriceUpdate(Number(e.target.value))}
-                  />
-                </div>
-                <div>
-                  <label>Stock</label>
-                  <input
-                    type="number"
-                    placeholder="Stock"
-                    value={stockUpdate}
-                    onChange={(e) => setStockUpdate(Number(e.target.value))}
+
+                <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-700/50 mb-6">
+                  <img
+                    src={getImageUrl(image)}
+                    alt="Product"
+                    className="w-full h-full object-contain p-4"
                   />
                 </div>
 
-                <div>
-                  <label>Category</label>
-                  <input
-                    type="text"
-                    placeholder="eg. laptop, camera etc"
-                    value={categoryUpdate}
-                    onChange={(e) => setCategoryUpdate(e.target.value)}
-                  />
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-bold text-slate-800 dark:text-slate-100">{name}</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-medium text-slate-600 dark:text-slate-300">₹{price}</span>
+                    <span className="text-sm px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300 font-medium uppercase tracking-wider">
+                      {category}
+                    </span>
+                  </div>
                 </div>
 
-                <div>
-                  <label>Photo</label>
-                  <input type="file" onChange={changeImageHandler} />
-                </div>
+                <button
+                  onClick={deleteHandler}
+                  className="w-full py-3 mt-4 flex items-center justify-center gap-2 bg-red-100 hover:bg-red-200 text-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 rounded-xl font-medium transition-colors"
+                >
+                  <FaTrash /> Delete Product
+                </button>
+              </section>
 
-                {photoUpdate && <img src={photoUpdate} alt="New Image" />}
-                <button type="submit">Update</button>
-              </form>
-            </article>
-          </>
-        )}
-      </main>
+              {/* Update Form Card */}
+              <article className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg rounded-2xl p-8 shadow-lg border border-white/20 h-fit">
+                <form onSubmit={submitHandler} className="space-y-6">
+                  <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-8 uppercase tracking-wide">
+                    Manage Product
+                  </h2>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={nameUpdate}
+                      onChange={(e) => setNameUpdate(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Price</label>
+                    <input
+                      type="number"
+                      placeholder="Price"
+                      value={priceUpdate}
+                      onChange={(e) => setPriceUpdate(Number(e.target.value))}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Stock</label>
+                    <input
+                      type="number"
+                      placeholder="Stock"
+                      value={stockUpdate}
+                      onChange={(e) => setStockUpdate(Number(e.target.value))}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Category</label>
+                    <input
+                      type="text"
+                      placeholder="eg. laptop, camera etc"
+                      value={categoryUpdate}
+                      onChange={(e) => setCategoryUpdate(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Photo</label>
+                    <input
+                      type="file"
+                      onChange={changeImageHandler}
+                      className="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-slate-700 dark:file:text-slate-200 transition-all"
+                    />
+                  </div>
+
+                  {photoUpdate && (
+                    <div className="flex justify-center mt-4">
+                      <img src={photoUpdate} alt="New Image" className="w-32 h-32 object-cover rounded-xl shadow-md border border-slate-200 dark:border-slate-600" />
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold uppercase tracking-wider shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1"
+                  >
+                    Update
+                  </button>
+                </form>
+              </article>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };

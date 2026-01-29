@@ -45,6 +45,8 @@ const Header = ({ user }: PropsType) => {
     { name: "Contact", path: "/contact" },
   ];
 
+  if (location.pathname.startsWith("/admin")) return null;
+
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-all duration-300">
       <div className="container mx-auto flex items-center justify-between px-6 h-20">

@@ -40,32 +40,57 @@ const AdminSidebar = () => {
   return (
     <>
       {phoneActive && (
-        <button id="hamburger" onClick={() => setShowModal(true)}>
-          <HiMenuAlt4 />
+        <button
+          id="hamburger"
+          onClick={() => setShowModal(true)}
+          className="fixed top-24 left-4 z-50 w-12 h-12 bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+        >
+          <HiMenuAlt4 className="text-2xl" />
         </button>
       )}
 
       <aside
-        style={
-          phoneActive
-            ? {
-                width: "20rem",
-                height: "100vh",
-                position: "fixed",
-                top: 0,
-                left: showModal ? "0" : "-20rem",
-                transition: "all 0.5s",
-              }
-            : {}
-        }
+        className={`bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 overflow-y-auto transition-all duration-300 ${phoneActive
+          ? `fixed top-0 left-0 h-screen w-72 z-50 shadow-2xl ${showModal ? "translate-x-0" : "-translate-x-full"
+          }`
+          : "relative"
+          }`}
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
       >
-        <h2>Logo.</h2>
-        <DivOne location={location} />
-        <DivTwo location={location} />
-        <DivThree location={location} />
+        {/* Logo */}
+        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            EasyBuy
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Admin Dashboard
+          </p>
+        </div>
+
+        {/* Navigation Sections */}
+        <div className="p-4 space-y-6">
+          <DivOne location={location} />
+          <DivTwo location={location} />
+          <DivThree location={location} />
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+            <Link
+              to="/"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200 transition-all duration-200"
+            >
+              <span className="text-lg">🏠</span>
+              <span className="text-sm">Home</span>
+            </Link>
+          </div>
+        </div>
 
         {phoneActive && (
-          <button id="close-sidebar" onClick={() => setShowModal(false)}>
+          <button
+            onClick={() => setShowModal(false)}
+            className="m-4 w-[calc(100%-2rem)] py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors"
+          >
             Close
           </button>
         )}
@@ -76,8 +101,10 @@ const AdminSidebar = () => {
 
 const DivOne = ({ location }: { location: Location }) => (
   <div>
-    <h5>Dashboard</h5>
-    <ul>
+    <h5 className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3 px-3">
+      Dashboard
+    </h5>
+    <ul className="space-y-1">
       <Li
         url="/admin/dashboard"
         text="Dashboard"
@@ -108,8 +135,10 @@ const DivOne = ({ location }: { location: Location }) => (
 
 const DivTwo = ({ location }: { location: Location }) => (
   <div>
-    <h5>Charts</h5>
-    <ul>
+    <h5 className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3 px-3">
+      Charts
+    </h5>
+    <ul className="space-y-1">
       <Li
         url="/admin/chart/bar"
         text="Bar"
@@ -134,8 +163,10 @@ const DivTwo = ({ location }: { location: Location }) => (
 
 const DivThree = ({ location }: { location: Location }) => (
   <div>
-    <h5>Apps</h5>
-    <ul>
+    <h5 className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3 px-3">
+      Apps
+    </h5>
+    <ul className="space-y-1">
       <Li
         url="/admin/app/stopwatch"
         text="Stopwatch"
@@ -164,24 +195,24 @@ interface LiProps {
   location: Location;
   Icon: IconType;
 }
-const Li = ({ url, text, location, Icon }: LiProps) => (
-  <li
-    style={{
-      backgroundColor: location.pathname.includes(url)
-        ? "rgba(0,115,255,0.1)"
-        : "white",
-    }}
-  >
-    <Link
-      to={url}
-      style={{
-        color: location.pathname.includes(url) ? "rgb(0,115,255)" : "black",
-      }}
-    >
-      <Icon />
-      {text}
-    </Link>
-  </li>
-);
+
+const Li = ({ url, text, location, Icon }: LiProps) => {
+  const isActive = location.pathname.includes(url);
+
+  return (
+    <li>
+      <Link
+        to={url}
+        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${isActive
+            ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium"
+            : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-200"
+          }`}
+      >
+        <Icon className={`text-lg ${isActive ? "text-blue-600 dark:text-blue-400" : ""}`} />
+        <span className="text-sm">{text}</span>
+      </Link>
+    </li>
+  );
+};
 
 export default AdminSidebar;
