@@ -9,9 +9,8 @@ import {
   useUpdateProductMutation,
 } from "../../../redux/api/productApi";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { server } from "../../../redux/store";
+import { getImageUrl, responseToast } from "../../../utils/features";
 import { Skeleton } from "../../../components/Loader";
-import { responseToast } from "../../../utils/features";
 
 const Productmanagement = () => {
   const { user } = useSelector(
@@ -73,17 +72,17 @@ const Productmanagement = () => {
       productId: data?.product._id as string,
     });
 
-    responseToast(res,navigate, "/admin/product");
+    responseToast(res, navigate, "/admin/product");
   };
 
   const deleteHandler = async () => {
-  
+
     const res = await deleteProduct({
       userId: user?._id as string,
       productId: data?.product._id as string,
     });
 
-    responseToast(res,navigate, "/admin/product");
+    responseToast(res, navigate, "/admin/product");
   };
 
   useEffect(() => {
@@ -95,7 +94,7 @@ const Productmanagement = () => {
     }
   }, [data]);
 
-  if(isError) return <Navigate to="/404" />
+  if (isError) return <Navigate to="/404" />
 
   return (
     <div className="admin-container">
@@ -107,7 +106,7 @@ const Productmanagement = () => {
           <>
             <section>
               <strong>ID - {data?.product._id}</strong>
-              <img src={`${server}/${image}`} alt="Product" />
+              <img src={getImageUrl(image)} alt="Product" />
               <p>{name}</p>
               {stock > 0 ? (
                 <span className="green">{stock} Available</span>

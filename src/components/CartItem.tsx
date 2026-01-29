@@ -2,7 +2,7 @@ import { FaMinus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import type { CartItem } from "../types/types";
-import { server } from "../redux/store";
+import { getImageUrl } from "../utils/features";
 import { Button } from "./ui/Button";
 
 type CartItemProps = {
@@ -23,7 +23,7 @@ const CartItem = ({
       <div className="flex w-full gap-6 items-center">
         <div className="w-20 h-20 flex-shrink-0 bg-secondary/30 rounded-lg overflow-hidden border border-border">
           <img
-            src={`${server}/${photo}`}
+            src={getImageUrl(photo)}
             alt={name}
             className="w-full h-full object-contain mix-blend-multiply"
           />
