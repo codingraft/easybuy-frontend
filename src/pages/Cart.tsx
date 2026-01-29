@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
+import { CiShoppingCart } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "../components/CartItem";
 import {
@@ -12,6 +13,9 @@ import { CartReducerInitialState } from "../types/reducer-types";
 import axios from "axios";
 import { server } from "../redux/store";
 import { Link } from "react-router-dom";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Card, CardContent, CardTitle } from "../components/ui/Card";
 
 const Cart = () => {
   const { cartItems, subtotal, shippingCharges, tax, discount, total } =
@@ -38,7 +42,7 @@ const Cart = () => {
   };
 
   useEffect(() => {
-    const { token: cancelToken, cancel } = axios.CancelToken.source(); // {token, cancel}
+    const { token: cancelToken, cancel } = axios.CancelToken.source();
 
     const id = setTimeout(() => {
       axios
@@ -47,7 +51,6 @@ const Cart = () => {
         })
         .then((res) => {
           dispatch(applyDiscount(res.data.discount));
-          // console.log(res.data);
           setvalidCoupon(true);
           dispatch(calculatePrice());
         })
@@ -58,8 +61,8 @@ const Cart = () => {
           dispatch(calculatePrice());
         });
     }, 1000);
-    if (Math.random() > 0.5) setvalidCoupon(true);
-    else setvalidCoupon(false);
+    // if (Math.random() > 0.5) setvalidCoupon(true); // Removing random logic
+    // else setvalidCoupon(false);
 
     return () => {
       clearTimeout(id);
@@ -73,8 +76,9 @@ const Cart = () => {
   }, [cartItems, dispatch]);
 
   return (
-    <div className="container cart flex justify-between items-start lg:flex-row flex-col gap-10 lg:min-h-screen p-4 lg:p-20 mt-12 lg:mt-16 mx-auto">
-      <main className="cart_main lg:w-3/5 w-full space-y-6">
+    <div className="container flex justify-between items-start lg:flex-row flex-col gap-10 min-h-[80vh] pt-32 pb-16 px-4 mx-auto animate-in fade-in duration-500">
+      <main className="lg:w-3/5 w-full space-y-6">
+        <h1 className="text-3xl font-heading font-bold text-foreground mb-6">Shopping Cart</h1>
         {cartItems.length > 0 ? (
           cartItems.map((item, index) => (
             <CartItem
@@ -86,55 +90,69 @@ const Cart = () => {
             />
           ))
         ) : (
-          <div className="text-center py-20">
-            <h1 className="text-3xl font-bold text-gray-300">Cart is empty</h1>
-            <Link to="/search" className="text-blue-600 mt-4 inline-block hover:underline">Start Shopping</Link>
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center rounded-2xl border border-dashed border-border/60 bg-secondary/10">
+            <div className="w-16 h-16 mb-6 rounded-full bg-background flex items-center justify-center shadow-sm text-muted-foreground">
+              <CiShoppingCart className="text-3xl" />
+            </div>
+            <h2 className="text-2xl font-heading font-bold text-foreground mb-2">Your cart is empty</h2>
+            <p className="text-muted-foreground mb-8 max-w-sm mx-auto">Looks like you haven't added anything to your cart yet.</p>
+            <Link to="/search">
+              <Button size="lg" className="shadow-lg hover:shadow-primary/20">
+                Start Shopping
+              </Button>
+            </Link>
           </div>
         )}
       </main>
-      <aside className="cart_sidebar bg-white lg:w-2/5 w-full border border-gray-100 p-8 rounded-xl shadow-lg sticky top-24">
-        <h2 className="text-xl font-bold mb-6 border-b pb-4">Order Summary</h2>
-        <div className="space-y-4 text-gray-700">
-          <p className="flex justify-between"><span>Subtotal:</span> <span className="font-medium">₹{subtotal}</span></p>
-          <p className="flex justify-between"><span>Shipping:</span> <span className="font-medium">₹{shippingCharges}</span></p>
-          <p className="flex justify-between"><span>Tax:</span> <span className="font-medium">₹{tax}</span></p>
-          <p className="flex justify-between text-green-600">
-            <span>Discount:</span> <em>- ₹{discount}</em>
-          </p>
-          <div className="border-t pt-4 mt-4">
-            <p className="flex justify-between text-xl font-bold text-gray-900">
-              <span>Total:</span> <span>₹{total}</span>
-            </p>
-          </div>
-        </div>
-        
-        <div className="mt-8">
-          <input
-            type="text"
-            value={coupon}
-            onChange={(e) => setCoupon(e.target.value)}
-            placeholder="Coupon code"
-            className="border border-gray-300 px-4 py-3 rounded-lg text-sm w-full mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {coupon &&
-            (validCoupon ? (
-              <p className="text-green-600 flex gap-2 items-center text-sm bg-green-50 p-2 rounded">
-                Discount ₹{discount} Applied using <code className="font-bold">{coupon}</code>
-              </p>
-            ) : (
-              <p className="text-red-600 flex gap-2 items-center text-sm bg-red-50 p-2 rounded">
-                <VscError /> Invalid Coupon
-              </p>
-            ))}
-        </div>
 
-        {cartItems.length > 0 && (
-          <Link to="/shipping">
-            <button className="w-full bg-black text-white py-4 rounded-lg mt-6 font-bold hover:bg-gray-800 transition-colors shadow-md">
-              CHECKOUT
-            </button>
-          </Link>
-        )}
+      <aside className="lg:w-2/5 w-full sticky top-24">
+        <Card className="shadow-lg border-border">
+          <div className="p-6 border-b border-border">
+            <CardTitle className="text-xl">Order Summary</CardTitle>
+          </div>
+          <CardContent className="space-y-6 pt-6">
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between text-muted-foreground"><span>Subtotal</span> <span className="font-medium text-foreground">₹{subtotal}</span></div>
+              <div className="flex justify-between text-muted-foreground"><span>Shipping</span> <span className="font-medium text-foreground">₹{shippingCharges}</span></div>
+              <div className="flex justify-between text-muted-foreground"><span>Tax</span> <span className="font-medium text-foreground">₹{tax}</span></div>
+              <div className="flex justify-between text-green-600 font-medium"><span>Discount</span> <span>- ₹{discount}</span></div>
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <div className="flex justify-between text-xl font-bold text-foreground">
+                <span>Total</span> <span>₹{total}</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Input
+                type="text"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+                placeholder="Coupon code"
+                className="uppercase placeholder:normal-case"
+              />
+              {coupon &&
+                (validCoupon ? (
+                  <p className="text-green-600 flex gap-2 items-center text-xs bg-green-50/50 p-2 rounded border border-green-100 dark:bg-green-900/20 dark:border-green-900">
+                    Discount ₹{discount} Applied using <code className="font-bold">{coupon}</code>
+                  </p>
+                ) : (
+                  <p className="text-destructive flex gap-2 items-center text-xs bg-destructive/10 p-2 rounded border border-destructive/20">
+                    <VscError /> Invalid Coupon
+                  </p>
+                ))}
+            </div>
+
+            {cartItems.length > 0 && (
+              <Link to="/shipping" className="block">
+                <Button className="w-full text-lg py-6 font-bold shadow-md hover:shadow-lg">
+                  CHECKOUT
+                </Button>
+              </Link>
+            )}
+          </CardContent>
+        </Card>
       </aside>
     </div>
   );

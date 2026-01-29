@@ -6,6 +6,9 @@ import { auth } from "../firebase";
 import { useLoginMutation } from "../redux/api/userApi";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { MessageResponse } from "../types/api-types";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 const Login = () => {
   const [gender, setGender] = useState("");
@@ -18,12 +21,7 @@ const Login = () => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      // const token = await user.getIdToken(); // Get secure Firebase token
-  
-      // Store token in cookies (frontend approach)
-      // document.cookie = `authToken=${token}; path=/; max-age=604800; Secure; SameSite=Strict`;
-  
-      
+
       const res = await login({
         name: user.displayName!,
         email: user.email!,
@@ -33,7 +31,7 @@ const Login = () => {
         dob,
         _id: user.uid,
       });
-  
+
       if ("data" in res) {
         if (res.data) {
           toast.success(res.data.message);
@@ -48,64 +46,74 @@ const Login = () => {
       console.log(error);
     }
   };
-  
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-          <p className="text-gray-500">Please enter your details to sign in</p>
+    <div className="w-full min-h-screen flex items-center justify-center bg-background p-4 lg:p-0">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 bg-card border border-border/50 rounded-2xl overflow-hidden shadow-2xl h-[85vh]">
+        {/* Left Side - Image/Brand */}
+        <div className="hidden lg:flex flex-col justify-center p-12 bg-secondary/30 relative overflow-hidden">
+          <div className="absolute inset-0 bg-zinc-900/5"></div>
+          {/* Abstract Decor */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-zinc-500/10 to-transparent"></div>
+
+          <div className="relative z-10 space-y-6">
+            <h1 className="text-5xl font-heading font-bold text-foreground tracking-tight">
+              Welcome to <br /> EasyBuy.
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-sm leading-relaxed">
+              Discover a curated shopping experience driven by quality, simplicity, and elegance.
+            </p>
+          </div>
         </div>
-        
-        <form className="space-y-6">
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Gender
-            </label>
-            <div className="relative">
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all appearance-none"
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-              </div>
+
+        {/* Right Side - Form */}
+        <div className="flex flex-col justify-center p-8 md:p-14 lg:p-20 bg-card">
+          <div className="max-w-md w-full mx-auto space-y-10">
+            <div className="text-center lg:text-left">
+              <h2 className="text-3xl font-heading font-bold text-foreground">Sign In</h2>
+              <p className="text-muted-foreground mt-2">Enter your details to access your account</p>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Date of Birth
-            </label>
-            <input
-              type="date"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-            />
-          </div>
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-foreground">Gender</label>
+                <select
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="w-full h-12 rounded-lg border border-input bg-background px-4 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all appearance-none"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
 
-          <div className="pt-4">
-            <button
-              type="button"
-              onClick={() => handleGoogleLogin()}
-              className="w-full bg-white text-gray-700 border border-gray-300 py-4 px-4 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-50 transition-all duration-300 font-bold shadow-sm hover:shadow-md"
-            >
-              <BsGoogle className="text-xl text-red-500" /> 
-              <span>Sign in with Google</span>
-            </button>
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-foreground">Date of Birth</label>
+                <Input
+                  type="date"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                />
+              </div>
+
+              <Button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="w-full gap-3 py-6 text-base shadow-sm hover:shadow-md transition-all"
+                variant="default"
+              >
+                <BsGoogle className="text-lg" />
+                <span>Continue with Google</span>
+              </Button>
+            </div>
+
+            <p className="text-center text-xs text-muted-foreground pt-4">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
           </div>
-        </form>
-        
-        <p className="mt-8 text-center text-sm text-gray-400">
-          By continuing, you agree to our Terms of Service and Privacy Policy.
-        </p>
+        </div>
       </div>
     </div>
   );

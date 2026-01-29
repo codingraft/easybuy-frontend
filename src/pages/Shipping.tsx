@@ -10,6 +10,9 @@ import { resetCart, saveShippingInfo } from "../redux/reducer/cartReducer";
 import { RootState } from "../redux/store";
 import { NewOrderRequest, RazorpayResponse } from "../types/api-types";
 import { responseToast } from "../utils/features";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Card, CardContent, CardTitle } from "../components/ui/Card";
 
 const Shipping = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
@@ -62,7 +65,7 @@ const Shipping = () => {
 
     try {
       setProcessing(true);
-      
+
       const {
         data: { key },
       } = await axios.get(`${import.meta.env.VITE_SERVER}/api/v1/payment/key`);
@@ -97,47 +100,47 @@ const Shipping = () => {
       };
 
       const options = {
-      key, // Replace with your Razorpay key_id
-      amount: order.order.amount,
-      currency: "INR",
-      name: "Vaibhav",
-      description: "Test Transaction",
-      order_id: order.order.id, // This is the order_id created in the backend
-      prefill: {
-        name: user?.name,
-        email: user?.email,
-      },
-      theme: {
-        color: "#121212",
-      },
-      handler: async function (response: RazorpayResponse) {
-        try {
-          const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-            response;
+        key, // Replace with your Razorpay key_id
+        amount: order.order.amount,
+        currency: "INR",
+        name: "Vaibhav",
+        description: "Test Transaction",
+        order_id: order.order.id, // This is the order_id created in the backend
+        prefill: {
+          name: user?.name,
+          email: user?.email,
+        },
+        theme: {
+          color: "#121212",
+        },
+        handler: async function (response: RazorpayResponse) {
+          try {
+            const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+              response;
 
-          const verifyRes = await axios.post(
-            `${import.meta.env.VITE_SERVER}/api/v1/payment/verify`,
-            { razorpay_order_id, razorpay_payment_id, razorpay_signature },
-            { headers: { "Content-Type": "application/json" } }
-          );
+            const verifyRes = await axios.post(
+              `${import.meta.env.VITE_SERVER}/api/v1/payment/verify`,
+              { razorpay_order_id, razorpay_payment_id, razorpay_signature },
+              { headers: { "Content-Type": "application/json" } }
+            );
 
-          if (verifyRes.data.success) {
-            toast.success("Payment Successful! Creating your order...");
-            const res = await newOrder(orderData);
-            dispatch(resetCart());
-            toast.success("Order placed successfully!");
-            responseToast(res, navigate, "/orders");
-          } else {
+            if (verifyRes.data.success) {
+              toast.success("Payment Successful! Creating your order...");
+              const res = await newOrder(orderData);
+              dispatch(resetCart());
+              toast.success("Order placed successfully!");
+              responseToast(res, navigate, "/orders");
+            } else {
+              toast.error("Payment Verification Failed");
+            }
+          } catch (error) {
+            console.error(error);
             toast.error("Payment Verification Failed");
+          } finally {
+            setProcessing(false);
           }
-        } catch (error) {
-          console.error(error);
-          toast.error("Payment Verification Failed");
-        } finally {
-          setProcessing(false);
-        }
-      },
-    };
+        },
+      };
 
       const razor = new (window as any).Razorpay(options);
       razor.open();
@@ -154,76 +157,76 @@ const Shipping = () => {
   }, [cartItems, navigate]);
 
   return (
-    <div className="shipping container mx-auto min-h-screen flex justify-center items-center py-10 relative">
-      <button
-        className="absolute top-4 left-4 md:top-8 md:left-8 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-800 hover:bg-black hover:text-white transition-colors shadow-md z-10"
+    <div className="container mx-auto min-h-[90vh] flex justify-center items-center pt-32 pb-10 relative bg-background animate-in fade-in zoom-in-95 duration-500">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-28 left-4 md:left-8 rounded-full shadow-md z-10 bg-background hover:bg-secondary border border-border"
         onClick={() => navigate("/cart")}
       >
         <BiArrowBack size={20} />
-      </button>
+      </Button>
 
-      <div className="w-full max-w-md">
-        <form
-          onSubmit={submitHandler}
-          className="shipping-form bg-white shadow-xl rounded-2xl p-8 md:p-10 flex flex-col gap-6 border border-gray-100"
-        >
-          <h1 className="text-3xl text-center font-bold text-gray-800 mb-2">Shipping Address</h1>
-          
-          <div className="space-y-4">
-            <input
-              type="text"
-              name="address"
-              placeholder="Address"
-              value={shippingInfo.address}
-              onChange={changeHandler}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <input
+      <Card className="w-full max-w-md shadow-xl border-border">
+        <form onSubmit={submitHandler}>
+          <div className="p-6 md:p-8 border-b border-border">
+            <CardTitle className="text-3xl text-center font-bold text-foreground font-heading">Shipping Address</CardTitle>
+          </div>
+          <CardContent className="p-6 md:p-8 space-y-6">
+            <div className="space-y-4">
+              <Input
                 type="text"
-                name="city"
-                placeholder="City"
-                value={shippingInfo.city}
+                name="address"
+                placeholder="Address"
+                value={shippingInfo.address}
                 onChange={changeHandler}
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
-              <input
-                type="text"
-                name="state"
-                placeholder="State"
-                value={shippingInfo.state}
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  value={shippingInfo.city}
+                  onChange={changeHandler}
+                />
+                <Input
+                  type="text"
+                  name="state"
+                  placeholder="State"
+                  value={shippingInfo.state}
+                  onChange={changeHandler}
+                />
+              </div>
+              <div className="relative">
+                <select
+                  name="country"
+                  id=""
+                  onChange={changeHandler}
+                  className="w-full flex h-12 rounded-lg border border-input bg-background px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[length:1em] bg-[right:1rem_center]"
+                >
+                  <option value="">Select Country</option>
+                  <option value="india">India</option>
+                </select>
+              </div>
+              <Input
+                type="number"
+                name="pinCode"
+                placeholder="Pin Code"
+                value={shippingInfo.pinCode}
                 onChange={changeHandler}
-                className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
-            <select 
-              name="country" 
-              id="" 
-              onChange={changeHandler}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none"
-            >
-              <option value="country">Select Country</option>
-              <option value="india">India</option>
-            </select>
-            <input
-              type="number"
-              name="pinCode"
-              placeholder="Pin Code"
-              value={shippingInfo.pinCode}
-              onChange={changeHandler}
-              className="w-full p-4 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-            />
-          </div>
 
-          <button 
-            type="submit" 
-            className="bg-black text-white p-4 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors shadow-lg mt-4"
-            disabled={isProcessing}
-          >
-            {isProcessing ? "Processing..." : "Place Order"}
-          </button>
+            <Button
+              type="submit"
+              className="w-full py-6 text-lg font-bold shadow-lg"
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Processing..." : "Place Order"}
+            </Button>
+          </CardContent>
         </form>
-      </div>
+      </Card>
     </div>
   );
 };

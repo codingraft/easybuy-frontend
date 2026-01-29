@@ -21,42 +21,52 @@ const ProductCard = ({
   handler,
 }: ProductsProp) => {
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100 hover:border-gray-200">
-      <div className="relative w-full aspect-[4/5] bg-gray-50 overflow-hidden">
+    <div className="group relative w-full">
+      {/* Image Container with sophisticated hover effect */}
+      <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary/20 mb-4">
         <img
           src={`${server}/${photo}`}
           alt={name}
-          className="w-full h-full object-contain p-6 transition-transform duration-500 group-hover:scale-110 mix-blend-multiply"
+          className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        
-        {/* Overlay Actions */}
-        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out bg-gradient-to-t from-white/90 to-transparent pt-10">
+
+        {/* Overlay / Quick Add */}
+        <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
           <button
             onClick={() =>
               handler({ productId, name, photo, price, quantity: 1, stock })
             }
-            className="w-full bg-black text-white py-3 rounded-xl font-medium shadow-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 transform active:scale-95"
+            className="w-full bg-white/90 backdrop-blur-sm text-foreground py-3 rounded-lg font-medium shadow-lg hover:bg-white transition-all duration-200 flex items-center justify-center gap-2 transform active:scale-95 disabled:opacity-75 disabled:cursor-not-allowed"
+            disabled={stock < 1}
           >
-            <FaPlus className="text-sm" /> Add to Cart
+            {stock < 1 ? (
+              <span className="text-xs font-bold uppercase tracking-wider">Out of Stock</span>
+            ) : (
+              <>
+                <FaPlus className="text-xs" />
+                <span className="text-sm tracking-wide">Add to Cart</span>
+              </>
+            )}
           </button>
         </div>
+
+        {/* Badges */}
+        {stock < 5 && stock > 0 && (
+          <div className="absolute top-3 left-3 bg-red-500/90 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shadow-sm backdrop-blur-md">
+            Low Stock
+          </div>
+        )}
       </div>
 
-      <div className="p-5">
-        <h3 className="text-gray-500 text-sm font-medium tracking-wide uppercase mb-1 truncate">
-          {name.split(' ')[0]} {/* Brand or Category placeholder */}
-        </h3>
-        <h2 className="text-gray-900 font-semibold text-lg mb-2 truncate" title={name}>
+      {/* Product Details - Minimalist */}
+      <div className="space-y-1">
+        <h3 className="font-medium text-foreground text-lg leading-tight truncate group-hover:text-primary transition-colors duration-200">
           {name}
-        </h2>
-        <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-gray-900">₹{price}</span>
-          {stock < 1 && (
-            <span className="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded-full">
-              Out of Stock
-            </span>
-          )}
-        </div>
+        </h3>
+        <p className="text-muted-foreground text-sm font-light">
+          {/* Placeholder category since API might not send it, or use price as main focus */}
+          <span className="font-semibold text-foreground">₹{price}</span>
+        </p>
       </div>
     </div>
   );

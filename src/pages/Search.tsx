@@ -10,6 +10,8 @@ import { Skeleton } from "../components/Loader";
 import { addToCart } from "../redux/reducer/cartReducer";
 import { useDispatch } from "react-redux";
 import { CartItem, User } from "../types/types";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
 
 const Search = ({ user }: { user: User | null }) => {
   const {
@@ -52,104 +54,127 @@ const Search = ({ user }: { user: User | null }) => {
   if (isError) toast.error((error as CustomError).data.message);
 
   return (
-    <div className="container flex items-start justify-between mx-auto gap-10 py-10 relative my-24 flex-wrap px-4">
-      <aside className="search-sidebar border border-gray-100 lg:flex-1 flex-auto p-6 rounded-xl bg-white shadow-lg sticky top-24">
-        <h1 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">Filters</h1>
-        <div className="filter mb-8">
-          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">Sort By</h2>
-          <select
-            value={sort}
-            name="sort"
-            className="p-3 border border-gray-200 rounded-lg w-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
-            onChange={(e) => setSort(e.target.value)}
-          >
-            <option value="price">None</option>
-            <option value="dsc">Price (High to Low)</option>
-            <option value="asc">Price (Low to High)</option>
-          </select>
+    <div className="container flex items-start justify-between mx-auto gap-10 pt-32 pb-10 relative min-h-screen mb-10 flex-col lg:flex-row px-4 animate-in fade-in duration-500">
+      {/* Sidebar Filters */}
+      <aside className="w-full lg:w-1/4 space-y-8 sticky top-24 h-fit">
+        <div className="flex items-center justify-between border-b border-border pb-4">
+          <h1 className="text-xl font-heading font-bold text-foreground">Filters</h1>
+          <button className="text-xs text-muted-foreground hover:text-primary transition-colors uppercase tracking-wider font-bold">Reset</button>
         </div>
-        <div className="filter mb-8">
-          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">
-            Max Price:{" "}
-            <span className="font-semibold text-blue-600">₹{range || ""}</span>
-          </h2>
+
+        <div className="space-y-4">
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Sort By</h2>
+          <div className="relative">
+            <select
+              value={sort}
+              name="sort"
+              className="w-full h-12 rounded-lg border border-input bg-card px-4 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none cursor-pointer transition-shadow shadow-sm hover:shadow-md"
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="price">Featured</option>
+              <option value="dsc">Price: High to Low</option>
+              <option value="asc">Price: Low to High</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Max Price</h2>
+            <span className="text-sm font-medium bg-secondary px-2 py-1 rounded">₹{range}</span>
+          </div>
           <input
             type="range"
             min={100}
             max={1000000}
             value={range}
             onChange={(e) => setRange(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            className="w-full h-1.5 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
           />
         </div>
-        <div className="filter">
-          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-3">Category</h2>
-          <select
-            name="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="p-3 border border-gray-200 rounded-lg w-full bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700"
-          >
-            <option value="">All Categories</option>
-            {!loadingCategiories &&
-              categoriesResponse?.categories.map((category) => (
-                <option key={category} value={category}>
-                  {category.toUpperCase()}
-                </option>
-              ))}
-          </select>
+
+        <div className="space-y-4">
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Category</h2>
+          <div className="relative">
+            <select
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full h-12 rounded-lg border border-input bg-card px-4 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none cursor-pointer transition-shadow shadow-sm hover:shadow-md"
+            >
+              <option value="">All Categories</option>
+              {!loadingCategiories &&
+                categoriesResponse?.categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category.toUpperCase()}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
       </aside>
-      <main className="search-main lg:w-3/4 w-full">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">Products</h1>
-        <div className="search mb-8">
-          <div className="relative">
-            <input
+
+      {/* Main Content */}
+      <main className="w-full lg:w-3/4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h1 className="text-4xl font-heading font-bold text-foreground tracking-tight">Shop Collection</h1>
+          <p className="text-muted-foreground text-sm">Showing {searchedData?.products.length || 0} results</p>
+        </div>
+
+        <div className="mb-10">
+          <div className="relative max-w-xl">
+            <Input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-4 pl-6 bg-white border border-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-lg"
+              className="pl-6 h-14 text-base rounded-full shadow-sm"
             />
           </div>
+
           {productLoading ? (
-            <Skeleton count={10} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10">
+              <Skeleton count={9} />
+            </div>
           ) : (
-            <div className="product_card grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 mt-5">
-              {searchedData?.products.map((product, index) => (
-                <ProductCard
-                  key={index}
-                  productId={product._id}
-                  photo={product.image}
-                  name={product.name}
-                  price={product.price}
-                  stock={product.stock}
-                  handler={addToCartHandler}
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-12 mt-10">
+              {searchedData?.products.map((product) => (
+                <div key={product._id} className="group cursor-pointer">
+                  <ProductCard
+                    productId={product._id}
+                    photo={product.image}
+                    name={product.name}
+                    price={product.price}
+                    stock={product.stock}
+                    handler={addToCartHandler}
+                  />
+                </div>
               ))}
             </div>
           )}
         </div>
 
         {searchedData && searchedData.totalPages > 1 && (
-          <article className="pagination flex items-center justify-center mt-5 gap-4">
-            <button
+          <article className="flex items-center justify-center mt-16 gap-6">
+            <Button
               onClick={() => setPage((prev) => prev - 1)}
-              className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
               disabled={page === 1}
+              variant="outline"
+              size="sm"
             >
               Previous
-            </button>
-            <span className="text-lg">
-              {page} / {searchedData.totalPages}
+            </Button>
+            <span className="text-sm font-medium text-foreground bg-secondary px-4 py-2 rounded-md">
+              Page {page} of {searchedData.totalPages}
             </span>
-            <button
+            <Button
               onClick={() => setPage((prev) => prev + 1)}
-              className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
               disabled={page === searchedData.totalPages}
+              variant="outline"
+              size="sm"
             >
               Next
-            </button>
+            </Button>
           </article>
         )}
       </main>
