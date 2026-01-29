@@ -1,5 +1,5 @@
 import { FaPlus } from "react-icons/fa";
-import { server } from "../redux/store";
+import { getImageUrl } from "../utils/features";
 import { CartItem } from "../types/types";
 
 type ProductsProp = {
@@ -25,7 +25,7 @@ const ProductCard = ({
       {/* Image Container with sophisticated hover effect */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-secondary/20 mb-4">
         <img
-          src={`${server}/${photo}`}
+          src={getImageUrl(photo)}
           alt={name}
           className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
         />
